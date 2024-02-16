@@ -29,3 +29,32 @@
 
 import pandas as pd
 import matplotlib.pyplot as plt
+
+
+def retrieve_clean_data():
+    # Load the dataset
+    cars = pd.read_csv("Sport car price.csv", index_col=0)
+
+    # Convert 'Price (in USD)' column to numeric values
+    cars['Price (in USD)'] = pd.to_numeric(cars['Price (in USD)'].str.replace(',', ''))
+
+    return cars
+
+
+def hp_per_dollar_scatterplot(cars):
+    # Select a sample of 24 cars from the dataset, drop duplicate car models, and sort by 'Price (in USD)'
+    sample_cars = cars.drop_duplicates(subset='Car Model').sample(24).sort_values(by=['Price (in USD)'])
+
+    # Print the sorted DataFrame
+    print(sample_cars)
+
+
+# Main Function
+def main():
+    cars = retrieve_clean_data()
+    hp_per_dollar_scatterplot(cars)
+
+
+# Only run main as stand-alone (not as a module)
+if __name__ == "__main__":
+    main()
