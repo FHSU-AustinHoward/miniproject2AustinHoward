@@ -14,7 +14,9 @@ researching APIs and gathering datasets. If you get stuck here, please email me!
 ## Getting Started
 
 ### Dependencies
-
+* You must download the sports car dataset from 
+[Kaggle](https://www.kaggle.com/datasets/rkiattisak/sports-car-prices-dataset)
+before using this program
 * Describe any prerequisites, libraries, OS version, etc., needed before installing program.
 * ex. Windows 10
 * List pip install instructions.

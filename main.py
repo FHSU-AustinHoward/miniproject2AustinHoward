@@ -26,3 +26,6 @@
             pip requirements, and how to execute the program. Please use the GitHub flavor of Markdown. Be thorough on
             the explanations.
 '''
+
+import pandas as pd
+import matplotlib.pyplot as plt
