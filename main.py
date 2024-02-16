@@ -41,6 +41,7 @@ def make_dir():
     except FileExistsError:
         pass
 
+
 def retrieve_clean_data():
     # Load the dataset
     cars = pd.read_csv("Sport car price.csv", index_col=0)
@@ -84,20 +85,39 @@ def hp_per_dollar_scatterplot(cars):
     # Show grid
     plt.grid(True)
 
+    # Return the selected_cars DataFrame for further processing
+    return selected_cars
+
+
+def save_chart(data, filename):
+    # Save the plot in the "charts" folder
+    full_filename = f"charts/{filename}.png"
+
+    plt.savefig(full_filename)
+
     # Show the plot
     plt.show()
 
+    print(f"Chart saved as: {full_filename}")
 
-def save_plot(graph):
+    return full_filename
+
 
 # Main Function
 def main():
     make_dir()
     cars = retrieve_clean_data()
-    graphs = []
-    graphs.append(hp_per_dollar_scatterplot(cars))
-    for graph in graphs:
-        save_plot(graph)
+
+    # Array to store charts
+    charts = []
+
+    # Append hp_per_dollar_scatterplot to the array
+    charts.append(hp_per_dollar_scatterplot(cars))
+
+    # Save each chart in the array
+    for i, chart in enumerate(charts):
+        chart_filename = f"chart_{i+1}"
+        save_chart(chart, chart_filename)
 
 
 # Only run main as stand-alone (not as a module)
