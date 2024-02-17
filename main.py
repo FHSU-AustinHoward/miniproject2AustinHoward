@@ -120,14 +120,38 @@ def new_car_hp_linechart(cars):
 
 
 def power_per_liter_barchart(cars):
+
+    # Calculate 'Horsepower per Liter'
+    cars['Horsepower per Liter'] = cars['Horsepower'] / cars['Engine Size (L)']
+
+    # Sort the DataFrame by 'Horsepower per Liter' in descending order
+    top_10_cars = cars.drop_duplicates('Car Model').sort_values(by='Horsepower per Liter', ascending=False).head(10)
+
+    # Create a bar chart
+    plt.figure(figsize=(12, 8))
+    plt.bar(top_10_cars['Car Model'], top_10_cars['Horsepower per Liter'])
+    plt.xlabel('Car Model')
+    plt.xticks(rotation=30, ha='right')
+    plt.ylabel('Horsepower per Liter')
+    plt.title('Top 10 Cars with the Best Horsepower per Liter')
+
+    # Show grid
+    plt.grid(True)
+
+    return plt
+
+
+def expensive_performance_boxplot(cars):
     pass
-    # return plt
+
 
 def save_chart(data, filename):
     # Save the plot in the "charts" folder
     full_filename = f"charts/{filename}.png"
     data.savefig(full_filename)
-    plt.clf()  # Clear the current figure
+
+    # Clear the current figure
+    plt.clf()
 
 
 # Main Function
@@ -146,7 +170,10 @@ def main():
     save_chart(plt, "best_horsepower_per_model_year")
 
     power_per_liter_barchart(cars)
-    save_chart(plt, "most_power_per_liter")
+    save_chart(plt, "most_horsepower_per_liter")
+
+    expensive_performance_boxplot(cars)
+    save_chart(plt, "best_performance_money_can_buy")
 
 # Only run main as stand-alone (not as a module)
 if __name__ == "__main__":
