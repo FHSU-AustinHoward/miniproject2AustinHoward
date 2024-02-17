@@ -141,26 +141,69 @@ def power_per_liter_barchart(cars):
     return plt
 
 
-def expensive_performance_boxplot(cars):
+import matplotlib.pyplot as plt
+
+def pricerange_performance_boxplot(cars):
     # Filter for cars over $1,000,000
-    expensive_cars = cars[cars['Price (in USD)'] > 1000000]
+    expensive_cars = cars[cars['Price (in USD)'] > 1000000].drop_duplicates('Car Model').sort_values(by='0-60 MPH Time (seconds)', ascending=False)
 
-    # Box plot
-    plt.figure(figsize=(12, 8))
-    box = plt.boxplot(expensive_cars['0-60 MPH Time (seconds)'].astype(float), vert=False, showfliers=True)
+    # Filter for cars between $100,000 and $1,000,000
+    midrange_cars = cars[(cars['Price (in USD)'] > 100000) & (cars['Price (in USD)'] <= 1000000)].drop_duplicates('Car Model').sort_values(by='0-60 MPH Time (seconds)', ascending=False)
 
-    # Get summary statistics using describe
-    summary_stats = expensive_cars['0-60 MPH Time (seconds)'].astype(float).describe()
+    # Filter for cars under $100,000
+    affordable_cars = cars[cars['Price (in USD)'] <= 100000].drop_duplicates('Car Model').sort_values(by='0-60 MPH Time (seconds)', ascending=False)
 
-    # Title and labels
-    plt.title('Box Plot of 0-60 Performance for Cars over $1,000,000')
-    plt.xlabel('0-60 MPH Time (seconds)')
+    # Calculate overall y-axis limits
+    overall_y_limits = (
+        min(affordable_cars['0-60 MPH Time (seconds)'].min(),
+            midrange_cars['0-60 MPH Time (seconds)'].min(),
+            expensive_cars['0-60 MPH Time (seconds)'].min()),
+        max(affordable_cars['0-60 MPH Time (seconds)'].max(),
+            midrange_cars['0-60 MPH Time (seconds)'].max(),
+            expensive_cars['0-60 MPH Time (seconds)'].max())
+    )
 
-    # Show grid
+    # Box plot for affordable cars
+    plt.figure(figsize=(18, 8))
+
+    plt.subplot(1, 3, 1)
+    plt.boxplot(affordable_cars['0-60 MPH Time (seconds)'].astype(float), vert=True, showfliers=True)
+    plt.xticks([1], ['Under $100,000'])
+    plt.title('Under $100,000')
     plt.grid(True)
+    plt.ylim(overall_y_limits)
 
-    # Display summary statistics on the plot using plt.figtext
-    plt.figtext(0.1, 0.5, summary_stats.to_string(), fontsize=10)
+    # Add describe() summary statistics
+    summary_stats_affordable = affordable_cars['0-60 MPH Time (seconds)'].astype(float).describe()
+    plt.text(0.2, 0.5, summary_stats_affordable.to_string(), fontsize=10, transform=plt.gca().transAxes)
+
+    # Box plot for midrange cars
+    plt.subplot(1, 3, 2)
+    plt.boxplot(midrange_cars['0-60 MPH Time (seconds)'].astype(float), vert=True, showfliers=True)
+    plt.xticks([1], ['$100,000 - $1,000,000'])
+    plt.title('$100,000 - $1,000,000')
+    plt.grid(True)
+    plt.ylim(overall_y_limits)
+
+    # Add describe() summary statistics
+    summary_stats_midrange = midrange_cars['0-60 MPH Time (seconds)'].astype(float).describe()
+    plt.text(0.5, 0.5, summary_stats_midrange.to_string(), fontsize=10, transform=plt.gca().transAxes)
+
+    # Box plot for expensive cars
+    plt.subplot(1, 3, 3)
+    plt.boxplot(expensive_cars['0-60 MPH Time (seconds)'].astype(float), vert=True, showfliers=True)
+    plt.xticks([1], ['Over $1,000,000'])
+    plt.title('Over $1,000,000')
+    plt.grid(True)
+    plt.ylim(overall_y_limits)
+
+    # Add describe() summary statistics
+    summary_stats_expensive = expensive_cars['0-60 MPH Time (seconds)'].astype(float).describe()
+    plt.text(0.8, 0.5, summary_stats_expensive.to_string(), fontsize=10, transform=plt.gca().transAxes)
+
+    # Common title and labels
+    plt.suptitle('Box Plot of 0-60 Performance for Different Price Ranges')
+    plt.ylabel('0-60 MPH Time (seconds)')
 
     return plt
 
@@ -192,8 +235,9 @@ def main():
     power_per_liter_barchart(cars)
     save_chart(plt, "most_horsepower_per_liter")
 
-    expensive_performance_boxplot(cars)
-    save_chart(plt, "best_performance_money_can_buy")
+    pricerange_performance_boxplot(cars)
+    save_chart(plt, "0-60_performance_per_price_range")
+
 
 # Only run main as stand-alone (not as a module)
 if __name__ == "__main__":
