@@ -142,7 +142,27 @@ def power_per_liter_barchart(cars):
 
 
 def expensive_performance_boxplot(cars):
-    pass
+    # Filter for cars over $1,000,000
+    expensive_cars = cars[cars['Price (in USD)'] > 1000000]
+
+    # Box plot
+    plt.figure(figsize=(12, 8))
+    box = plt.boxplot(expensive_cars['0-60 MPH Time (seconds)'].astype(float), vert=False, showfliers=True)
+
+    # Get summary statistics using describe
+    summary_stats = expensive_cars['0-60 MPH Time (seconds)'].astype(float).describe()
+
+    # Title and labels
+    plt.title('Box Plot of 0-60 Performance for Cars over $1,000,000')
+    plt.xlabel('0-60 MPH Time (seconds)')
+
+    # Show grid
+    plt.grid(True)
+
+    # Display summary statistics on the plot using plt.figtext
+    plt.figtext(0.1, 0.5, summary_stats.to_string(), fontsize=10)
+
+    return plt
 
 
 def save_chart(data, filename):
