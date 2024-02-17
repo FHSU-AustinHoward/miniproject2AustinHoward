@@ -18,8 +18,8 @@
             some fancy charts here as it will greatly help you in future homework assignments and in the final project.
 (DONE) Save these graphs in a folder called charts as PNG files. Do not upload these to your project folder, the
             project should save these when it executes. You may want to add this folder to your .gitignore file.
-(10/10 points) There should be a minimum of 5 commits on your project, be sure to commit often!
-(10/10 points) I will be checking out the main branch of your project. Please be sure to include a requirements.txt file
+(DONE) There should be a minimum of 5 commits on your project, be sure to commit often!
+(DONE) I will be checking out the main branch of your project. Please be sure to include a requirements.txt file
             which contains all the packages that need installed. You can create this fille with the output of pip freeze
             at the terminal prompt.
 (20/20 points) There should be a README.md file in your project that explains what your project is, how to install the
@@ -27,12 +27,12 @@
             the explanations.
 """
 
-#Imports
-from pathlib import Path
-
+# Imports
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+
+from pathlib import Path
 
 
 def make_dir():
@@ -139,7 +139,6 @@ def new_car_hp_linechart(cars):
 
 
 def power_per_liter_barchart(cars):
-
     # Calculate HP/l
     cars['Horsepower per Liter'] = cars['Horsepower'] / cars['Engine Size (L)']
 
