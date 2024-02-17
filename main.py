@@ -45,6 +45,7 @@ def make_dir():
 def retrieve_clean_data():
     # Load the dataset
     cars = pd.read_csv("Sport car price.csv", index_col=0)
+    print(cars.dtypes)
 
     # Remove commas and convert 'Price (in USD)' column to numeric, if it can't: NaN
     cars['Price (in USD)'] = pd.to_numeric(cars['Price (in USD)'].str.replace(',', ''), errors='coerce')
@@ -57,12 +58,9 @@ def retrieve_clean_data():
     return cars
 
 
-def hp_per_dollar_scatterplot(cars):
+def cheap_performance_scatterplot(cars):
     # Select the 25 cheapest unique car models
     selected_cars = cars.sort_values(by='Price (in USD)').drop_duplicates('Car Model').head(25)
-
-    # Print selection for debugging
-    print(selected_cars)
 
     # Scatterplot
     plt.figure(figsize=(12, 8))
@@ -78,47 +76,77 @@ def hp_per_dollar_scatterplot(cars):
     plt.xlabel('Horsepower')
     plt.ylabel('Price (in USD)')
 
-    # Increase the number of ticks and labels on both axes
-    plt.xticks(np.arange(100, max(selected_cars['Horsepower']) + 100, 100))
-    plt.yticks(np.arange(min(selected_cars['Price (in USD)'] - 5000), max(selected_cars['Price (in USD)']) + 5000, 5000))
+    # Set the number of ticks and labels on both axes
+    plt.xticks(np.arange(100,
+                         max(selected_cars['Horsepower']) + 100,
+                         100)
+               )
+    plt.yticks(np.arange(min(selected_cars['Price (in USD)'] - 5000),
+                         max(selected_cars['Price (in USD)']) + 5000,
+                         5000)
+               )
 
     # Show grid
     plt.grid(True)
 
-    # Return the selected_cars DataFrame for further processing
-    return selected_cars
+    return plt
 
+def new_car_hp_linechart(cars):
+    # Filter for the past 25 years
+    selected_cars = cars[cars['Year'] >= cars['Year'].max() - 25]
+
+    # Group by Year and find the maximum Horsepower for each year
+    max_hp_per_year = selected_cars.groupby('Year')['Horsepower'].max()
+
+    # Line chart
+    plt.figure(figsize=(12, 8))
+    plt.plot(max_hp_per_year.index, max_hp_per_year.values, marker='o', linestyle='-', color='b')
+
+    # Add data labels with Car Model information
+    for year, horsepower in max_hp_per_year.items():
+        max_hp_model = selected_cars.loc[
+            (selected_cars['Year'] == year) & (selected_cars['Horsepower'] == horsepower), 'Car Model'].values[0]
+        plt.text(year, horsepower, f"{max_hp_model}", fontsize=8, ha='left', va='bottom')
+
+    # Title and labels
+    plt.title('Most powerful new car releases')
+    plt.xlabel('Year')
+    plt.ylabel('Horsepower')
+
+    # Show grid
+    plt.grid(True)
+
+    return plt
+
+
+def power_per_liter_barchart(cars):
+    pass
+    # return plt
 
 def save_chart(data, filename):
     # Save the plot in the "charts" folder
     full_filename = f"charts/{filename}.png"
-
-    plt.savefig(full_filename)
-
-    # Show the plot
-    plt.show()
-
-    print(f"Chart saved as: {full_filename}")
-
-    return full_filename
+    data.savefig(full_filename)
+    plt.clf()  # Clear the current figure
 
 
 # Main Function
 def main():
+    # Make the charts directory
     make_dir()
+
+    # Retrieve sanitized data from the sports cars data_set
     cars = retrieve_clean_data()
 
-    # Array to store charts
-    charts = []
+    # Call different methods to create the charts and save them
+    cheap_performance_scatterplot(cars)
+    save_chart(plt, "cheap_performance_cars")
 
-    # Append hp_per_dollar_scatterplot to the array
-    charts.append(hp_per_dollar_scatterplot(cars))
+    new_car_hp_linechart(cars)
+    save_chart(plt, "best_horsepower_per_model_year")
 
-    # Save each chart in the array
-    for i, chart in enumerate(charts):
-        chart_filename = f"chart_{i+1}"
-        save_chart(chart, chart_filename)
-
+    power_per_liter_barchart(cars)
+    save_chart(plt, "most_power_per_liter")
 
 # Only run main as stand-alone (not as a module)
 if __name__ == "__main__":
