@@ -21,7 +21,9 @@ I sought to answer the following questions with my dataset:
 
 ## Getting Started
 You will need to download [this](https://www.kaggle.com/datasets/rkiattisak/sports-car-prices-dataset)
-'Sports Car Prices Dataset' from Kaggle.com in order to use the same dataframes as this project
+'Sports Car Prices Dataset' from Kaggle.com in order to use the same dataframes as the project intended.
+
+[Note]: You must add 'Sports Car Prices Dataset' to the running directory of main.py in order for this script to work.
 
 ### Pip install instructions
 In a terminal window, please type the following:
